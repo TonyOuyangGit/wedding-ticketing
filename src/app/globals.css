@@ -1,34 +1,12 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #3b82f6;
+  --accent-fg: #ffffff;
+  --row-hover: #f9fafb;
 }
 
 * {
@@ -37,13 +15,282 @@ body {
   margin: 0;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+html,
+body {
+  max-width: 100vw;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+body {
+  color: var(--fg);
+  background: var(--bg);
+  font-family:
+    system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  font-size: 1.4rem;
+}
+h2 {
+  font-size: 1.1rem;
+}
+
+button,
+.btn {
+  font: inherit;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+button.primary,
+.btn.primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+button.danger {
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  width: 100%;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+th,
+td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+tbody tr:hover {
+  background: var(--row-hover);
+}
+tbody tr.row-link {
+  cursor: pointer;
+}
+tbody tr.row-link:focus-visible {
+  outline: 2px solid var(--accent, #3b82f6);
+  outline-offset: -2px;
+}
+
+.stage-pill {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: #fff;
+}
+
+.field {
+  margin-bottom: 0.9rem;
+}
+.row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.mention {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Markdown toolbar + textarea (description editors) */
+.md-editor {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+.md-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.3rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+  background: #f9fafb;
+}
+.md-tool {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  color: var(--fg);
+}
+.md-tool:hover {
+  background: #eef0f3;
+  border-color: var(--border);
+}
+.md-sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 0.15rem 0.25rem;
+  background: var(--border);
+}
+.md-editor textarea {
+  border: none;
+  border-radius: 0;
+  resize: vertical;
+}
+.md-editor textarea:focus {
+  outline: none;
+}
+
+/* Custom fields: label on the left, input on the right (Jira-style) */
+.cf-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.cf-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.cf-label {
+  flex: 0 0 180px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: left;
+}
+.cf-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+@media (max-width: 560px) {
+  .cf-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
   }
+  .cf-label {
+    flex-basis: auto;
+  }
+}
+
+/* Horizontally scrollable data grid */
+.table-scroll {
+  overflow-x: auto;
+}
+.table-scroll table {
+  min-width: 100%;
+  width: max-content;
+}
+.card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.muted {
+  color: var(--muted);
+}
+
+/* Rendered markdown (ticket description). The global reset strips list
+   padding, so restore it here and keep long content inside the card. */
+.markdown {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.markdown > *:first-child {
+  margin-top: 0;
+}
+.markdown > *:last-child {
+  margin-bottom: 0;
+}
+.markdown ul,
+.markdown ol {
+  padding-left: 1.4rem;
+  margin: 0.5rem 0;
+}
+.markdown li {
+  margin: 0.15rem 0;
+}
+.markdown p {
+  margin: 0.5rem 0;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  margin: 0.75rem 0 0.4rem;
+  line-height: 1.25;
+}
+.markdown h1 {
+  font-size: 1.25rem;
+}
+.markdown h2 {
+  font-size: 1.1rem;
+}
+.markdown h3 {
+  font-size: 1rem;
+}
+.markdown code {
+  background: #f3f4f6;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.markdown pre {
+  background: #f3f4f6;
+  padding: 0.75rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.markdown pre code {
+  background: none;
+  padding: 0;
+}
+.markdown blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 0.75rem;
+  color: var(--muted);
+  margin: 0.5rem 0;
+}
+.markdown a {
+  overflow-wrap: anywhere;
 }

@@ -33,6 +33,9 @@ if (devAuthEnabled) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers,
+  // Trust the host/proxy headers in production (Vercel terminates TLS in front
+  // of the app) so Auth.js builds correct callback URLs behind the proxy.
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
   callbacks: {

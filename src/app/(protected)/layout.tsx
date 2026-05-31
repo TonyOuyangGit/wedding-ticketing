@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/lib/auth";
+import { isAdmin, type SessionUser } from "@/lib/access";
 
 export default async function ProtectedLayout({
   children,
@@ -8,6 +10,7 @@ export default async function ProtectedLayout({
 }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
+  const user = session.user as SessionUser;
 
   return (
     <div>
@@ -16,11 +19,18 @@ export default async function ProtectedLayout({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "0.75rem 1rem",
-          borderBottom: "1px solid #ddd",
+          padding: "0.6rem 1rem",
+          borderBottom: "1px solid var(--border)",
+          gap: "1rem",
         }}
       >
-        <strong>Wedding Ticketing</strong>
+        <nav style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <Link href="/" style={{ fontWeight: 700, color: "var(--fg)" }}>
+            XX Events
+          </Link>
+          <Link href="/tickets/new">New Event</Link>
+          {isAdmin(user) && <Link href="/admin">Admin</Link>}
+        </nav>
         <form
           action={async () => {
             "use server";
@@ -28,11 +38,15 @@ export default async function ProtectedLayout({
           }}
           style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
         >
-          <span>{session.user.email}</span>
+          <span className="muted" style={{ fontSize: "0.85rem" }}>
+            {user.email}
+          </span>
           <button type="submit">Sign out</button>
         </form>
       </header>
-      <main style={{ padding: "1rem" }}>{children}</main>
+      <main style={{ padding: "1rem", maxWidth: 1200, margin: "0 auto" }}>
+        {children}
+      </main>
     </div>
   );
 }

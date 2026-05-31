@@ -35,9 +35,15 @@ model User {
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  mcTickets     Ticket[]       @relation("Mc")
-  djTickets     Ticket[]       @relation("Dj")
-  notifications Notification[]
+  mcTickets               Ticket[]       @relation("Mc")
+  djTickets               Ticket[]       @relation("Dj")
+  contractHandlerTickets  Ticket[]       @relation("ContractHandler")
+  notifications           Notification[]
+}
+
+model Setting {
+  key   String @id
+  value String
 }
 
 model Stage {
@@ -62,6 +68,7 @@ model Ticket {
   id           String    @id @default(cuid())
   client       String
   weddingDate  DateTime?
+  location     String?
   description  String    @default("")
   customValues Json      @default("{}")
   createdAt    DateTime  @default(now())
@@ -72,9 +79,15 @@ model Ticket {
 
   mcUserId String?
   mc       User?   @relation("Mc", fields: [mcUserId], references: [id])
+  mcName   String? // fallback display name when no matching user (e.g. from import)
 
   djUserId String?
   dj       User?   @relation("Dj", fields: [djUserId], references: [id])
+  djName   String? // fallback display name when no matching user (e.g. from import)
+
+  contractHandlerId   String?
+  contractHandler     User?   @relation("ContractHandler", fields: [contractHandlerId], references: [id])
+  contractHandlerName String? // fallback display name when no matching user
 
   links         ExternalLink[]
   notifications Notification[]

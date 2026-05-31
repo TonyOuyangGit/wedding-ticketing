@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/guards";
 import type { FieldType } from "@/lib/fields";
+import { DEFAULT_CONTRACT_HANDLER_KEY } from "@/lib/constants";
 
 const FIELD_TYPES: FieldType[] = [
   "text",
@@ -41,6 +42,24 @@ export async function deleteUser(id: string) {
   const admin = await requireAdmin();
   if (admin.id === id) throw new Error("You cannot remove yourself");
   await db.user.delete({ where: { id } });
+  revalidatePath("/admin");
+}
+
+// ---- Default contract handler setting ----
+
+export async function setDefaultContractHandler(form: FormData) {
+  await requireAdmin();
+  const userId = s(form, "userId");
+  if (userId) {
+    await db.setting.upsert({
+      where: { key: DEFAULT_CONTRACT_HANDLER_KEY },
+      update: { value: userId },
+      create: { key: DEFAULT_CONTRACT_HANDLER_KEY, value: userId },
+    });
+  } else {
+    // "—" clears the default.
+    await db.setting.deleteMany({ where: { key: DEFAULT_CONTRACT_HANDLER_KEY } });
+  }
   revalidatePath("/admin");
 }
 
