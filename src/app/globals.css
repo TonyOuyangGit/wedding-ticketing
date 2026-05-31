@@ -202,6 +202,73 @@ tbody tr.row-link:focus-visible {
   flex: 1 1 auto;
   min-width: 0;
 }
+/* All custom-field inputs render as the same-width "box": same border, same
+   max width, light-grey hover (Jira-style), accent border on focus. Applies
+   to text/number/url/date inputs, single + multi selects, and textareas. */
+.cf-input > input:not([type="checkbox"]):not([type="radio"]),
+.cf-input > select,
+.cf-input > textarea {
+  width: 100%;
+  max-width: 320px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.4rem 0.55rem;
+  transition: background 0.12s, border-color 0.12s;
+}
+.cf-input > input:hover,
+.cf-input > select:hover,
+.cf-input > textarea:hover {
+  background: #f3f4f6;
+}
+.cf-input > input:focus,
+.cf-input > select:focus,
+.cf-input > textarea:focus {
+  background: #fff;
+  border-color: var(--accent);
+  outline: none;
+}
+/* Multi-selects render as a list inside the box; cap the height so the row
+   doesn't blow up to 8 visible options. */
+.cf-input > select[multiple] {
+  min-height: 6rem;
+  padding: 0.25rem;
+}
+
+/* External links row — remove button (the ✕). Subtle by default, brightens
+   on hover so it's clear it's destructive without being visually loud. */
+.link-remove {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.link-remove:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+/* Custom dropdown arrow for single <select> elements: inset ~12px from the
+   right edge (browser default sits flush against it). Multi-selects are a
+   list view and get no arrow. */
+select:not([multiple]) {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%236b7280' d='M2 4l4 4 4-4z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
+}
+/* Restore the custom-field padding-right after the shorthand reset above. */
+.cf-input > select:not([multiple]) {
+  padding-right: 2rem;
+}
 @media (max-width: 560px) {
   .cf-row {
     flex-direction: column;
@@ -210,6 +277,11 @@ tbody tr.row-link:focus-visible {
   }
   .cf-label {
     flex-basis: auto;
+  }
+  .cf-input > input,
+  .cf-input > select,
+  .cf-input > textarea {
+    max-width: 100%;
   }
 }
 

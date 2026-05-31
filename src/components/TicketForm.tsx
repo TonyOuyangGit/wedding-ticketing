@@ -1,6 +1,7 @@
 import type { FieldDefinition, Stage, User } from "@prisma/client";
 import { KEEP_IMPORTED_NAME } from "@/lib/constants";
 import { MarkdownTextarea } from "@/components/MarkdownTextarea";
+import { LinksEditor } from "@/components/LinksEditor";
 
 type TicketWithLinks = {
   id: string;
@@ -82,12 +83,10 @@ function DynamicField({
   switch (field.type) {
     case "boolean":
       return (
-        <input
-          type="checkbox"
-          {...common}
-          defaultChecked={value === true}
-          style={{ width: "auto" }}
-        />
+        <select {...common} defaultValue={value === true ? "true" : "false"}>
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
       );
     case "select":
       return (
@@ -171,14 +170,16 @@ export function TicketForm({
   const cv = (ticket?.customValues ?? {}) as Record<string, unknown>;
   // New tickets get the two most common link rows pre-labeled (URLs blank, so
   // they're only saved if filled in). Editing shows existing links as-is.
+  // Extra blank rows aren't needed any more — LinksEditor has an "Add link"
+  // button.
   const existingLinks = ticket?.links ?? [];
-  const defaultLabels = ticket ? [] : ["Contract", "Wedding Rundown"];
-  const linkRows = [
-    ...existingLinks,
-    ...defaultLabels.map((label) => ({ label, url: "" })),
-    { label: "", url: "" },
-    { label: "", url: "" },
-  ];
+  const defaultLinks = ticket
+    ? []
+    : [
+        { label: "Contract", url: "" },
+        { label: "Wedding Rundown", url: "" },
+      ];
+  const initialLinks = [...existingLinks, ...defaultLinks];
 
   return (
     <form action={action}>
@@ -268,25 +269,7 @@ export function TicketForm({
 
       <div className="card">
         <h2 style={{ marginBottom: "0.75rem" }}>External links</h2>
-        {linkRows.map((l, i) => (
-          <div className="row" key={i} style={{ marginBottom: "0.5rem" }}>
-            <input
-              name="linkLabel"
-              placeholder="Label (e.g. Contract)"
-              defaultValue={l.label}
-              style={{ flex: "1 1 160px" }}
-            />
-            <input
-              name="linkUrl"
-              placeholder="https://…"
-              defaultValue={l.url}
-              style={{ flex: "2 1 240px" }}
-            />
-          </div>
-        ))}
-        <p className="muted" style={{ fontSize: "0.8rem" }}>
-          Leave a row blank to skip it. Empty labels default to the URL.
-        </p>
+        <LinksEditor initial={initialLinks} />
       </div>
 
       {showDescription && (
