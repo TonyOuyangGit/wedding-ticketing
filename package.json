@@ -12,6 +12,7 @@
     "db:import": "tsx scripts/import-csv.ts"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.2",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "marked": "^18.0.4",
@@ -24,6 +25,7 @@
     "sanitize-html": "^2.17.4"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.65.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -130,6 +130,22 @@ git push origin main
 - **Custom domain:** Vercel → Project → **Settings → Domains** → add your domain
   and follow the DNS instructions. Then update `AUTH_URL` to the custom domain
   and add the matching Google redirect URI.
+- **Google Maps location autocomplete:** turn on address suggestions on the
+  Location field.
+  1. Google Cloud Console → **APIs & Services → Library** → enable **Places API**.
+  2. **APIs & Services → Credentials → Create credentials → API key**.
+  3. Edit the new key → **Application restrictions → HTTP referrers** → add
+     `https://YOUR-DOMAIN/*` (and `http://localhost:3000/*` for local testing).
+  4. Under **API restrictions**, restrict to **Places API** only.
+  5. In Vercel, set env var `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` to the key value.
+     Redeploy.
+
+  Cost: ~$0.017 per autocomplete session. Google's $200/month free credit covers
+  ~10,000 sessions — far beyond any wedding-event volume.
+
+  If `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is unset, the Location field falls back
+  to a plain text input (no crash).
+
 - **Email notifications:** sign up at <https://resend.com>, verify a sending
   domain, create an API key, and set `RESEND_API_KEY` in Vercel. Without it,
   notification emails are logged to the Vercel function logs instead of sent.

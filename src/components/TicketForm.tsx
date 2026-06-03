@@ -2,6 +2,7 @@ import type { FieldDefinition, Stage, User } from "@prisma/client";
 import { KEEP_IMPORTED_NAME } from "@/lib/constants";
 import { MarkdownTextarea } from "@/components/MarkdownTextarea";
 import { LinksEditor } from "@/components/LinksEditor";
+import { LocationInput } from "@/components/LocationInput";
 
 type TicketWithLinks = {
   id: string;
@@ -78,7 +79,11 @@ function DynamicField({
   value: unknown;
 }) {
   const name = `cf_${field.key}`;
-  const common = { id: name, name };
+  // Native HTML5 `required` blocks submission and shows the browser's
+  // "Please fill out this field" tooltip — graceful prompt without a server
+  // round-trip. Booleans are excluded: "required: true" on Yes/No is a weird
+  // edge case (would mean "must be Yes"); leave that to server validation.
+  const common = { id: name, name, required: field.required && field.type !== "boolean" };
 
   switch (field.type) {
     case "boolean":
@@ -240,10 +245,10 @@ export function TicketForm({
       <div className="row">
         <div className="field" style={{ flex: "1 1 100%" }}>
           <label>Location</label>
-          <input
+          <LocationInput
             name="location"
             defaultValue={ticket?.location ?? ""}
-            placeholder="Venue / address"
+            placeholder="Venue / address (start typing for suggestions)"
           />
         </div>
       </div>
